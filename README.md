@@ -1,7 +1,7 @@
 # SegRefiner
 
 > **SegRefiner: Towards Model-Agnostic Segmentation Refinement with Discrete Diffusion Process**   
-> Mengyu Wang, Henghui Ding, Junhao Liew, Jiajun Liu, Yao Zhao, Yunchao Wei   
+> Mengyu Wang, Henghui Ding, Jun Hao Liew, Jiajun Liu, Yao Zhao, Yunchao Wei   
 > NeurIPS, 2023  
 
 We will release our code soon!   
