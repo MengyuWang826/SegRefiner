@@ -875,6 +875,10 @@ class LoadPatchData:
         return results
 
 
+# -----------------------------------------------------------------------------------
+# References:
+# cascadepsp: https://github.com/hkchengrex/CascadePSP/blob/83cc3b8783b595b2e47c75016f93654eaddb7412/util/boundary_modification.py
+# -----------------------------------------------------------------------------------
 def get_random_structure(size):
     # The provided model is trained with 
     #   choice = np.random.randint(4)

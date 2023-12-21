@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------------
+# References:
+# cascadepsp: https://github.com/hkchengrex/CascadePSP/blob/83cc3b8783b595b2e47c75016f93654eaddb7412/eval_post.py
+# -----------------------------------------------------------------------------------
 import argparse
 import numpy as np
 from PIL import Image

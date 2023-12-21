@@ -1,11 +1,12 @@
+# -----------------------------------------------------------------------------------
+# References:
+# iddpm: https://github.com/openai/improved-diffusion/blob/main/improved_diffusion/unet.py
+# -----------------------------------------------------------------------------------
+
 import torch.nn as nn
-
 from ..builder import HEADS
-
 from abc import abstractmethod
-
 import math
-
 import numpy as np
 import torch as th
 import torch.nn as nn

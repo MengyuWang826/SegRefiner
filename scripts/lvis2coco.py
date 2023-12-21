@@ -1,3 +1,7 @@
+# -----------------------------------------------------------------------------------
+# References:
+# iddpm: https://github.com/zhanggang001/RefineMask/blob/633ed2be1b36b3f3c798be484b6a5117004faab8/tools/cocofied_lvis.py
+# -----------------------------------------------------------------------------------
 import argparse
 import copy
 import json
