@@ -24,7 +24,7 @@ if __name__ == '__main__':
     print('----------start collecting dis---------------')
     dis_all_files = os.listdir(dis_root)
     with tqdm(total=len(dis_all_files)) as p:
-        for filename in dis_all_files[:8]:
+        for filename in dis_all_files:
             mask_file = filename.replace('jpg', 'png')
             mask_name = 'dis/DIS-TR/gt/' + mask_file
             img_name = 'dis/DIS-TR/im/' + filename
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     for line in f:
         thin_all_files.append(line.strip())
     with tqdm(total=len(dis_all_files)) as p:
-        for filename in thin_all_files[:8]:
+        for filename in thin_all_files:
             mask_file = filename
             mask_name = 'thin_object/masks/' + mask_file
             filename = filename.replace('png', 'jpg')
