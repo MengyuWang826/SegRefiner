@@ -161,30 +161,17 @@ def modify_boundary(image, regional_sample_rate=0.1, sample_rate=0.1, move_rate=
     
     return image
 
-def run_inst_dis(img_info):
+def run_inst(img_info):
     gt_mask = cv2.imread(data_root+img_info['maskname'], cv2.IMREAD_GRAYSCALE)
     assert gt_mask is not None
     coarse_mask = modify_boundary(gt_mask*255)
-    coarse_filename = 'data/dis/DIS-TR/coarse/' + img_info['maskname'][14:]
+    coarse_filename = data_root + img_info['coarsename']
     Image.fromarray(coarse_mask).save(coarse_filename)
     contours, _ = cv2.findContours(gt_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     expand_coarse_mask = np.zeros_like(gt_mask)
     cv2.drawContours(expand_coarse_mask, contours, contourIdx=-1, color=1, thickness=-1)
     expand_coarse_mask = modify_boundary(expand_coarse_mask*255)
-    expand_coarse_filename = 'data/dis/DIS-TR/coarse_expand/' + img_info['maskname'][14:]
-    Image.fromarray(expand_coarse_mask).save(expand_coarse_filename)
-
-def run_inst_thin(img_info):
-    gt_mask = cv2.imread(data_root+img_info['maskname'], cv2.IMREAD_GRAYSCALE)
-    assert gt_mask is not None
-    coarse_mask = modify_boundary(gt_mask*255)
-    coarse_filename = 'data/thin_object/coarse/' + img_info['maskname'][18:]
-    Image.fromarray(coarse_mask).save(coarse_filename)
-    contours, _ = cv2.findContours(gt_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    expand_coarse_mask = np.zeros_like(gt_mask)
-    cv2.drawContours(expand_coarse_mask, contours, contourIdx=-1, color=1, thickness=-1)
-    expand_coarse_mask = modify_boundary(expand_coarse_mask*255)
-    expand_coarse_filename = 'data/thin_object/coarse_expand/' + img_info['maskname'][18:]
+    expand_coarse_filename = data_root + img_info['expandname']
     Image.fromarray(expand_coarse_mask).save(expand_coarse_filename)
 
 
@@ -200,22 +187,28 @@ if __name__ == '__main__':
     dis_all_files = os.listdir(dis_root)
     with tqdm(total=len(dis_all_files)) as p:
         for filename in dis_all_files:
-            mask_name = filename.replace('jpg', 'png')
-            mask_name = 'dis/DIS-TR/gt/' + mask_name
+            mask_file = filename.replace('jpg', 'png')
+            mask_name = 'dis/DIS-TR/gt/' + mask_file
             img_name = 'dis/DIS-TR/im/' + filename
+            coarsename = 'dis/DIS-TR/coarse/' + mask_file
+            expandname = 'dis/DIS-TR/coarse_expand/' + mask_file
             img = cv2.imread(os.path.join(dis_root, filename))
             assert img is not None
             h, w = img.shape[:2]
             img_info = {'filename': img_name,
                         'maskname': mask_name,
+                        'coarsename': coarsename,
+                        'expandname': expandname,
                         'height': h, 'width': w}
             collection['dis'].append(img_info)
             p.update()
 
     print('----------start tansforming dis---------------')
+    os.makedirs(data_root + 'dis/DIS-TR/coarse', exist_ok=True)
+    os.makedirs(data_root + 'dis/DIS-TR/coarse_expand', exist_ok=True)
     with mp.Pool(processes=20) as p:
         with tqdm(total=len(collection['dis'])) as pbar:
-            for _ in p.imap_unordered(run_inst_dis, collection['dis']):
+            for _ in p.imap_unordered(run_inst, collection['dis']):
                 pbar.update()
     
     print('----------start collecting thin---------------')
@@ -225,25 +218,31 @@ if __name__ == '__main__':
         thin_all_files.append(line.strip())
     with tqdm(total=len(dis_all_files)) as p:
         for filename in thin_all_files:
-            mask_name = filename
-            mask_name = 'thin_object/masks/' + mask_name
+            mask_file = filename
+            mask_name = 'thin_object/masks/' + mask_file
             filename = filename.replace('png', 'jpg')
             img_name = 'thin_object/images/' + filename
+            coarsename = 'thin_object/coarse/' + mask_file
+            expandname = 'thin_object/coarse_expand/' + mask_file
             img = cv2.imread(os.path.join(thin_object_root, filename))
             assert img is not None
             h, w = img.shape[:2]
             img_info = {'filename': img_name,
                         'maskname': mask_name,
+                        'coarsename': coarsename,
+                        'expandname': expandname,
                         'height': h, 'width': w}
             collection['thin'].append(img_info)
             p.update()
 
     print('----------start tansforming thin---------------')
+    os.makedirs(data_root + 'thin_object/coarse', exist_ok=True)
+    os.makedirs(data_root + 'thin_object/coarse_expand', exist_ok=True)
     with mp.Pool(processes=20) as p:
         with tqdm(total=len(collection['thin'])) as pbar:
-            for _ in p.imap_unordered(run_inst_thin, collection['thin']):
+            for _ in p.imap_unordered(run_inst, collection['thin']):
                 pbar.update()
     
     print('----------writing json file---------------')
-    with open('data/collection_hr.json', 'w') as f:
+    with open(collection_json_file, 'w') as f:
         json.dump(collection, f)

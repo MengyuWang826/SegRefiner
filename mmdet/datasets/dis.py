@@ -9,6 +9,8 @@ from .pipelines import Compose
 @DATASETS.register_module()
 class DISDataset(Dataset):
 
+    CLASSES = ('1', '2')
+
     def __init__(self,
                  data_root,
                  img_root,

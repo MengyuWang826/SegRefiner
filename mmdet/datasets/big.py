@@ -26,6 +26,8 @@ from .pipelines import Compose
 @DATASETS.register_module()
 class BigDataset(Dataset):
 
+    CLASSES = ('1', '2')
+
     def __init__(self,
                  data_root,
                  pipeline,
