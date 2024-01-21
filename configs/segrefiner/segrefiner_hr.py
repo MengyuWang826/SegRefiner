@@ -34,3 +34,16 @@ data = dict(
     val=dict(), 
     test=dict())
 
+max_iters = 40000
+runner = dict(type='IterBasedRunner', max_iters=max_iters)
+
+# learning policy
+lr_config = dict(
+    policy='step',
+    gamma=0.5,
+    by_epoch=False,
+    step=[20000, 35000],
+    warmup='linear',
+    warmup_by_epoch=False,
+    warmup_ratio=1.0,  # no warmup
+    warmup_iters=10)
